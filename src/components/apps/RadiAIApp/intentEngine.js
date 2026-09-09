@@ -84,7 +84,7 @@ export function processUserQuery(rawInput) {
     /certif|accredit|credentials|badges/i.test(query)
   ) {
     const certsList = profile.certifications
-      .map((c, i) => `${i + 1}. ${c}`)
+      .map((c, i) => `${i + 1}. ${c.name || c}`)
       .join('\n');
 
     return `Marouane holds ${profile.certifications.length} verified certifications:\n\n${certsList}\n\nYou can inspect these verified badges inside the "About Me" (about.sys) application.`;

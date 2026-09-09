@@ -10,12 +10,34 @@ export const profile = {
   summary: "Full Stack developer skilled in Laravel, React, JavaScript, PHP and MySQL. Motivated, serious, eager to grow through new academic and professional challenges.",
   languages: ["Arabic", "French", "English"],
   certifications: [
-    "Web Fundamentals — Web Development with HTML",
-    "Bootstrap Environment, Requirements & Setup",
-    "Database Fundamentals — Database Concepts",
-    "Principes fondamentaux de la cybersécurité (CC)",
-    "Nouveaux développements en matière de Python",
-    "JIRA Cloud — Planifier et travailler sur un projet de développement logiciel",
+    {
+      name: "Web Fundamentals — Web Development with HTML",
+      certificateFile: "/certificates/web-fundamentals.pdf",
+    },
+    {
+      name: "Bootstrap Environment, Requirements & Setup",
+      certificateFile: "/certificates/bootstrap-environment.pdf",
+    },
+    {
+      name: "Database Fundamentals — Database Concepts",
+      certificateFile: "/certificates/database-fundamentals.pdf",
+    },
+    {
+      name: "Principes fondamentaux de la cybersécurité (CC)",
+      certificateFile: "/certificates/cybersecurite-fondamentaux.pdf",
+    },
+    {
+      name: "Nouveaux développements en matière de Python",
+      certificateFile: "/certificates/nouveaux-developpements-python.pdf",
+    },
+    {
+      name: "JIRA Cloud — Planifier et travailler sur un projet de développement logiciel",
+      certificateFile: "/certificates/jira-cloud.pdf",
+    },
+    {
+      name: "L'IA au travail",
+      certificateFile: "/certificates/ia-au-travail.pdf",
+    },
   ],
 };
 

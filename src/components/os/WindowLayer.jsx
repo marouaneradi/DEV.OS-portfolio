@@ -55,7 +55,7 @@ export default function WindowLayer({ onTriggerMatrix }) {
   const { openWindows } = useWindow();
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-20">
       <AnimatePresence>
         {openWindows.map((win) => (
           <div key={win.id} className="pointer-events-auto">

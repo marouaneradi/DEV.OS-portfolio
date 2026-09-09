@@ -25,7 +25,7 @@ export default function Desktop() {
   }, []);
 
   return (
-    <div className="relative w-screen h-screen bg-dev-base text-slate-100 overflow-hidden flex flex-col select-none">
+    <div className="relative w-full h-[100dvh] min-h-[100dvh] bg-dev-base text-slate-100 overflow-hidden flex flex-col select-none">
       {/* Subtle Technical Grid Background */}
       <div
         className="absolute inset-0 pointer-events-none opacity-60"
@@ -48,7 +48,7 @@ export default function Desktop() {
       />
 
       {/* Desktop Main Workspace & Background Identity */}
-      <main className="relative z-10 flex-1 pt-12 pb-16 px-4 flex flex-col justify-between items-center overflow-y-auto">
+      <main className="relative z-10 flex-1 pt-12 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] px-3 sm:px-4 flex flex-col justify-between items-center overflow-y-auto w-full">
         {/* Subtle Typographic Backdrop / Identity */}
         <div className="text-center my-auto flex flex-col items-center justify-center pointer-events-none select-none py-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-dev-cyan font-mono text-[11px] uppercase tracking-widest mb-4">

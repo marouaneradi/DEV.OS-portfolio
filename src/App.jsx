@@ -9,7 +9,7 @@ function AppContent() {
   const { booted } = useSystem();
 
   return (
-    <div className="min-h-screen bg-dev-base text-slate-100 font-sans relative overflow-hidden">
+    <div className="min-h-[100dvh] w-full bg-dev-base text-slate-100 font-sans relative overflow-x-hidden">
       <AnimatePresence mode="wait">
         {!booted ? (
           <BootScreen key="boot-screen" />

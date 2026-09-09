@@ -12,7 +12,7 @@ export default function Taskbar() {
   }
 
   return (
-    <nav aria-label="Open Applications" className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 max-w-4xl w-auto px-2 py-1.5 rounded-xl bg-dev-surface/90 border border-white/10 shadow-2xl backdrop-blur-md flex items-center gap-1.5 select-none">
+    <nav aria-label="Open Applications" className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 z-40 max-w-[calc(100vw-1.5rem)] md:max-w-4xl w-auto px-2 py-1.5 rounded-xl bg-dev-surface/90 border border-white/10 shadow-2xl backdrop-blur-md flex items-center gap-1.5 overflow-x-auto select-none">
       <AnimatePresence>
         {openWindows.map((win) => {
           const appMeta = APPS_DATA.find((a) => a.id === win.appId) || {};

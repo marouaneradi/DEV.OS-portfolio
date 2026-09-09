@@ -11,6 +11,7 @@ import {
   ExternalLink,
   Languages,
   CheckCircle2,
+  FileText,
 } from 'lucide-react';
 import { profile } from '../../../config/profile';
 
@@ -147,25 +148,61 @@ export default function AboutApp() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-          {profile.certifications.map((cert, index) => (
-            <div
-              key={index}
-              className="group p-3 rounded-lg bg-dev-elevated/20 hover:bg-dev-elevated/40 border border-white/5 hover:border-dev-cyan/30 transition-all duration-150 flex items-center gap-3"
-            >
-              <div className="p-1.5 rounded-md bg-dev-cyan/10 text-dev-cyan group-hover:scale-110 transition-transform duration-150 shrink-0">
-                <CheckCircle2 size={15} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {profile.certifications.map((cert, index) => {
+            const name = typeof cert === 'string' ? cert : cert.name;
+            const file = typeof cert === 'object' ? cert.certificateFile : null;
+
+            const content = (
+              <>
+                <div className="p-1.5 rounded-md bg-dev-cyan/10 text-dev-cyan group-hover:scale-110 transition-transform duration-150 shrink-0">
+                  <CheckCircle2 size={15} />
+                </div>
+                <div className="truncate flex-1">
+                  <p className="text-xs font-medium text-slate-200 group-hover:text-white transition-colors truncate">
+                    {name}
+                  </p>
+                  <p className="text-[10px] font-mono text-slate-500 mt-0.5 flex items-center gap-1.5">
+                    <span>Verified Technical Certification</span>
+                    {file && (
+                      <span className="text-dev-cyan/80 flex items-center gap-0.5">
+                        • <FileText size={10} className="inline" /> PDF
+                      </span>
+                    )}
+                  </p>
+                </div>
+                {file && (
+                  <div className="text-slate-500 group-hover:text-dev-cyan transition-colors shrink-0 ml-1 p-1">
+                    <ExternalLink size={13} />
+                  </div>
+                )}
+              </>
+            );
+
+            if (file) {
+              return (
+                <a
+                  key={index}
+                  href={file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`View Certificate: ${name} (PDF)`}
+                  className="group p-3 rounded-lg bg-dev-elevated/20 hover:bg-dev-elevated/40 border border-white/5 hover:border-dev-cyan/40 hover:shadow-sm hover:shadow-dev-cyan/10 transition-all duration-150 flex items-center gap-3 cursor-pointer text-left"
+                >
+                  {content}
+                </a>
+              );
+            }
+
+            return (
+              <div
+                key={index}
+                className="group p-3 rounded-lg bg-dev-elevated/20 hover:bg-dev-elevated/40 border border-white/5 transition-all duration-150 flex items-center gap-3"
+              >
+                {content}
               </div>
-              <div className="truncate">
-                <p className="text-xs font-medium text-slate-200 group-hover:text-white transition-colors truncate">
-                  {cert}
-                </p>
-                <p className="text-[10px] font-mono text-slate-500 mt-0.5">
-                  Verified Technical Certification
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </motion.div>
 

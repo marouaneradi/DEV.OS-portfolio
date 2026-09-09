@@ -5,7 +5,7 @@ import { profile } from '../../../config/profile';
 import { projects } from '../../../config/projects';
 
 export default function TerminalApp({ onTriggerMatrix }) {
-  const { openWindow } = useWindow();
+  const { openWindow, resetAllWindows, closeAllWindows } = useWindow();
   const [input, setInput] = useState('');
   const [history, setHistory] = useState([
     {
@@ -53,6 +53,8 @@ export default function TerminalApp({ onTriggerMatrix }) {
   journey     - Print chronological system history logs
   lab         - Launch interactive developer lab
   contact     - View direct contact details & links
+  reset / tidy- Tidy and re-cascade all open windows
+  closeall    - Close all open windows
   github      - Open official GitHub profile
   matrix      - Trigger digital Matrix rain mode
   whoami      - Print current session developer identity
@@ -60,6 +62,23 @@ export default function TerminalApp({ onTriggerMatrix }) {
   cat <file>  - Read virtual file (bio.txt, stack.txt, certs.txt)
   sudo        - Request superuser privileges
   clear       - Clear the terminal screen`,
+        });
+        break;
+
+      case 'reset':
+      case 'tidy':
+        resetAllWindows();
+        newHistory.push({
+          type: 'output',
+          text: `[✓] All open windows tidied and re-cascaded to default viewport bounds.`,
+        });
+        break;
+
+      case 'closeall':
+        closeAllWindows();
+        newHistory.push({
+          type: 'output',
+          text: `[✓] All windows closed. Desktop cleared.`,
         });
         break;
 

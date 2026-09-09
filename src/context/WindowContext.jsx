@@ -18,14 +18,32 @@ export const WindowProvider = ({ children }) => {
   const [openWindows, setOpenWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null);
 
-  // Focus a window and bring it to the top of the stack
+  // Focus a window and bring it to the top of the stack (ensuring it is safely in bounds)
   const focusWindow = useCallback((id) => {
     setActiveWindowId(id);
     setOpenWindows((prev) =>
       prev.map((win) => {
         if (win.id === id) {
           nextZIndex += 1;
-          return { ...win, zIndex: nextZIndex, isMinimized: false };
+          const minX = 10;
+          const maxX = Math.max(minX, window.innerWidth - 180);
+          const minY = 38;
+          const maxY = Math.max(minY, window.innerHeight - 60);
+
+          const isOutOfBounds =
+            win.position.x < minX ||
+            win.position.x > maxX ||
+            win.position.y < minY ||
+            win.position.y > maxY;
+
+          const safePos = isOutOfBounds
+            ? {
+                x: Math.max(minX, Math.min(maxX, win.position.x)),
+                y: Math.max(minY, Math.min(maxY, win.position.y)),
+              }
+            : win.position;
+
+          return { ...win, zIndex: nextZIndex, isMinimized: false, position: safePos };
         }
         return win;
       })
@@ -106,6 +124,12 @@ export const WindowProvider = ({ children }) => {
     [activeWindowId]
   );
 
+  // Close all open windows
+  const closeAllWindows = useCallback(() => {
+    setOpenWindows([]);
+    setActiveWindowId(null);
+  }, []);
+
   // Minimize window
   const minimizeWindow = useCallback(
     (id) => {
@@ -128,12 +152,111 @@ export const WindowProvider = ({ children }) => {
     [activeWindowId, openWindows]
   );
 
-  // Restore minimized window
+  // Reset a specific window's position and size to default center
+  const resetWindow = useCallback(
+    (id) => {
+      setOpenWindows((prev) => {
+        const idx = prev.findIndex((w) => w.id === id);
+        if (idx === -1) return prev;
+
+        const defaultWidth = Math.min(800, window.innerWidth - 60);
+        const defaultHeight = Math.min(520, window.innerHeight - 120);
+        const baseX = Math.max(20, Math.round((window.innerWidth - defaultWidth) / 2));
+        const baseY = Math.max(50, Math.round((window.innerHeight - defaultHeight) / 2 - 20));
+        const offsetIndex = idx % 6;
+
+        const newX = Math.min(baseX + offsetIndex * 24, Math.max(20, window.innerWidth - defaultWidth - 20));
+        const newY = Math.min(baseY + offsetIndex * 24, Math.max(40, window.innerHeight - defaultHeight - 40));
+
+        nextZIndex += 1;
+
+        return prev.map((win) => {
+          if (win.id === id) {
+            return {
+              ...win,
+              isMinimized: false,
+              isMaximized: false,
+              zIndex: nextZIndex,
+              size: { width: defaultWidth, height: defaultHeight },
+              position: { x: newX, y: newY },
+            };
+          }
+          return win;
+        });
+      });
+      setActiveWindowId(id);
+    },
+    []
+  );
+
+  // Reset/re-cascade all open windows into a clean arrangement
+  const resetAllWindows = useCallback(() => {
+    setOpenWindows((prev) => {
+      if (prev.length === 0) return prev;
+
+      const defaultWidth = Math.min(800, window.innerWidth - 60);
+      const defaultHeight = Math.min(520, window.innerHeight - 120);
+      const baseX = Math.max(20, Math.round((window.innerWidth - defaultWidth) / 2));
+      const baseY = Math.max(50, Math.round((window.innerHeight - defaultHeight) / 2 - 20));
+
+      return prev.map((win, idx) => {
+        const offsetIndex = idx % 6;
+        const newX = Math.min(baseX + offsetIndex * 24, Math.max(20, window.innerWidth - defaultWidth - 20));
+        const newY = Math.min(baseY + offsetIndex * 24, Math.max(40, window.innerHeight - defaultHeight - 40));
+
+        return {
+          ...win,
+          isMinimized: false,
+          isMaximized: false,
+          size: { width: defaultWidth, height: defaultHeight },
+          position: { x: newX, y: newY },
+        };
+      });
+    });
+  }, []);
+
+  // Restore minimized window (ensuring it is safely visible on-screen)
   const restoreWindow = useCallback(
     (id) => {
-      focusWindow(id);
+      setOpenWindows((prev) => {
+        nextZIndex += 1;
+        return prev.map((win) => {
+          if (win.id === id) {
+            // Check if coordinates are off-screen
+            const minX = 10;
+            const maxX = Math.max(minX, window.innerWidth - 180);
+            const minY = 40;
+            const maxY = Math.max(minY, window.innerHeight - 80);
+
+            const isOutOfBounds =
+              win.position.x < minX ||
+              win.position.x > maxX ||
+              win.position.y < minY ||
+              win.position.y > maxY;
+
+            let finalPos = win.position;
+            if (isOutOfBounds) {
+              const defaultWidth = win.size.width || 720;
+              const defaultHeight = win.size.height || 480;
+              finalPos = {
+                x: Math.max(minX, Math.min(maxX, Math.round((window.innerWidth - defaultWidth) / 2))),
+                y: Math.max(minY, Math.min(maxY, Math.round((window.innerHeight - defaultHeight) / 2))),
+              };
+            }
+
+            return {
+              ...win,
+              isMinimized: false,
+              zIndex: nextZIndex,
+              position: finalPos,
+            };
+          }
+          return win;
+        });
+      });
+      setActiveWindowId(id);
     },
-    [focusWindow]
+    []
   );
 
   // Toggle maximize
@@ -168,8 +291,11 @@ export const WindowProvider = ({ children }) => {
       activeWindowId,
       openWindow,
       closeWindow,
+      closeAllWindows,
       minimizeWindow,
       restoreWindow,
+      resetWindow,
+      resetAllWindows,
       toggleMaximizeWindow,
       focusWindow,
       updateWindowPosition,
@@ -180,8 +306,11 @@ export const WindowProvider = ({ children }) => {
       activeWindowId,
       openWindow,
       closeWindow,
+      closeAllWindows,
       minimizeWindow,
       restoreWindow,
+      resetWindow,
+      resetAllWindows,
       toggleMaximizeWindow,
       focusWindow,
       updateWindowPosition,

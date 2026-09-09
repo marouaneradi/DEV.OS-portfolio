@@ -15,16 +15,32 @@ import {
   Github,
   Linkedin,
   Bot,
+  LayoutGrid,
+  XSquare,
 } from 'lucide-react';
 import { useWindow } from '../../context/WindowContext';
 import { profile } from '../../config/profile';
 
 export default function CommandPalette({ isOpen, onClose, onTriggerMatrix }) {
-  const { openWindow } = useWindow();
+  const { openWindow, resetAllWindows, closeAllWindows } = useWindow();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const actions = [
+    {
+      id: 'action-reset-windows',
+      name: 'Reset All Windows (Tidy Desktop)',
+      category: 'Window Control',
+      icon: LayoutGrid,
+      action: () => resetAllWindows(),
+    },
+    {
+      id: 'action-close-all',
+      name: 'Close All Windows (Clean Desktop)',
+      category: 'Window Control',
+      icon: XSquare,
+      action: () => closeAllWindows(),
+    },
     {
       id: 'app-radi-ai',
       name: 'Ask RADI AI (Offline Assistant)',
